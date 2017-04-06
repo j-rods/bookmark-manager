@@ -1,14 +1,24 @@
-# feature "user can view tags" do
+feature "Filter tags" do
 
-#   scenario "filter by tag" do
-#     visit "/links/new"
-#     fill_in :title, with: "google"
-#     fill_in :url, with: "www.google.co.uk"
-#     fill_in :tags, with: "search"
-#     click_button "Save link"
+  before(:each) do
+    Link.create(url: 'http://www.gamekult.com', title: 'Gamekult', tags: [Tag.first_or_create(name: 'games')])
+    Link.create(url: 'http://www.google.com', title: 'Google', tags: [Tag.first_or_create(name: 'search')])
+    Link.create(url: 'http://www.ign.com', title: 'IGN', tags: [Tag.first_or_create(name: 'games')])
+    Link.create(url: 'http://www.reddit.com/cat', title: 'Reddit for cat', tags: [Tag.first_or_create(name: 'cat')])
+  end
 
-#     visit "/tags/bubbles"
-#     expect(page).to have_content "google"
-#   end
+  scenario "Filter by specific tag" do
+    visit "/tags/games"
+    expect(page.status_code).to eq 200
 
-# end
+    within 'ul#links' do
+      expect(page).not_to have_content 'search'
+      expect(page).not_to have_content 'cats'
+      expect(page).to have_content 'games'
+    end
+
+
+  end
+
+
+end
