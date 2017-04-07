@@ -11,16 +11,17 @@ feature "User Sign Up" do
     fill_in :email, with: "jrods@gmail.com"
     fill_in :password, with: "pizza1234"
     fill_in :password_confirmation, with: "pizza12345"
-    expect { click_button "Sign up" }.to_not change(User, :count).from(0)
+    expect { click_button "Sign up" }.to_not change(User, :count)
     expect(current_path).to eq '/users'
-    expect(page).to have_content 'Password and confirmation password do not match'
+    expect(page).to have_content 'Password does not match the confirmation'
   end
 
   scenario "user can't sign up with blank email" do
     visit "/users/new"
     fill_in :password, with: "pizza12"
     fill_in :password_confirmation, with: "pizza12"
-    expect { click_button "Sign up" }.to_not change(User, :count).from(0)
+    expect { click_button "Sign up" }.to_not change(User, :count)
+    expect(page).to have_content 'Email must not be blank'
   end
 
   scenario "user can't sign up with invalid email format" do
@@ -28,7 +29,17 @@ feature "User Sign Up" do
     fill_in :email, with: "jrods@gmail"
     fill_in :password, with: "pizza123"
     fill_in :password_confirmation, with: "pizza123"
-    expect { click_button "Sign up" }.to_not change(User, :count).from(0)
+    expect { click_button "Sign up" }.to_not change(User, :count)
+    expect(page).to have_content 'Email has an invalid format'
   end
 
+  scenario "email address already exists" do
+    sign_up
+    visit "/users/new"
+    fill_in :email, with: 'cat@catmail.com'
+    fill_in :password, with: "pizza1"
+    fill_in :password_confirmation, with: "pizza1"
+    expect { click_button "Sign up" }.to_not change(User, :count)
+    expect(page).to have_content 'Email is already taken'
+  end
 end
