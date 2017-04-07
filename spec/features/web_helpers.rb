@@ -5,12 +5,3 @@ def create_link_and_tag
   fill_in :tags, with: "curry Quentin"
   click_button "Save link"
 end
-
-def sign_up
-  visit '/users/new'
-  expect(page.status_code).to eq 200
-  fill_in :email, with: 'cat@catmail.com'
-  fill_in :password, with: 'iwanttobealion!'
-  fill_in :password_confirmation, with: 'iwanttobealion!'
-  click_button 'Sign up'
-end

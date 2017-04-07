@@ -4,6 +4,7 @@ require 'capybara/rspec'
 require './app/app' # I am already in 'app' so don't include it!
 require 'database_cleaner'
 require 'features/web_helpers'
+require_relative 'helpers/session'
 
 require File.join(File.dirname(__FILE__), '..', './app/app.rb')
 Capybara.app = BookmarkManager
@@ -39,6 +40,8 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
+  config.include SessionHelpers
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
